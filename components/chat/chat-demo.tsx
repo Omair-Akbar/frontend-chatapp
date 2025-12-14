@@ -79,7 +79,7 @@ export function ChatDemo() {
             <p className="font-medium text-sm">Musa</p>
             <div className="flex items-center w-max justify-center pt-1 gap-2">
               {/* <p className="text-xs text-green-600 font-semibold ">Online</p> */}
-              <p className="text-xs text-blue-600 font-semibold">Active in chat</p>
+              <p className="text-xs text-gray-400">Active in chat</p>
             </div>
           </div>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
