@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { ArrowLeft } from "lucide-react"
 import { useAppSelector, useAppDispatch } from "@/lib/store/hooks"
-import { getCurrentUser } from "@/lib/store/slices/auth-slice"
 import { EditProfileForm } from "@/components/profile/edit-profile-form"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Button } from "@/components/ui/button"
@@ -14,11 +13,6 @@ export default function ProfilePage() {
   const dispatch = useAppDispatch()
   const { user, isAuthenticated, isInitialized } = useAppSelector((state) => state.auth)
 
-  useEffect(() => {
-    if (!isInitialized) {
-      dispatch(getCurrentUser())
-    }
-  }, [dispatch, isInitialized])
 
   useEffect(() => {
     if (isInitialized && !isAuthenticated) {

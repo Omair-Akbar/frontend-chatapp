@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
-import { loginUser } from "@/lib/store/slices/auth-slice"
+import { loginUser, setOtpEmail } from "@/lib/store/slices/auth-slice"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -43,7 +43,13 @@ export function LoginForm() {
       toast.success("Login successful!")
       router.push("/chat")
     } catch (err) {
-      toast.error(err as string || "Login failed")
+      toast.error((err as string) || "Login failed")
+    }
+  }
+
+  const handleForgotPassword = (e: React.MouseEvent) => {
+    if (email) {
+      dispatch(setOtpEmail(email))
     }
   }
 
@@ -79,7 +85,11 @@ export function LoginForm() {
       >
         <div className="flex items-center justify-between">
           <Label htmlFor="password">Password</Label>
-          <Link href="/forgot-password" className="text-xs hover:underline text-muted-foreground">
+          <Link
+            href="/forgot-password"
+            className="text-xs hover:underline text-muted-foreground"
+            onClick={handleForgotPassword}
+          >
             Forgot password?
           </Link>
         </div>

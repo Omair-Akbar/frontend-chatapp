@@ -137,7 +137,7 @@ export function Header() {
             {isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href="/profile">Profile</Link>
+                  <Link href="/chat">Chat</Link>
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2 bg-transparent">
                   <LogOut className="h-4 w-4" />
@@ -198,8 +198,8 @@ export function Header() {
             {isAuthenticated ? (
               <>
                 <Button variant="outline" className="w-full bg-transparent" asChild>
-                  <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
-                    Profile
+                  <Link href="/chat" onClick={() => setIsMenuOpen(false)}>
+                    Chat
                   </Link>
                 </Button>
                 <Button

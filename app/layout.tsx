@@ -5,10 +5,19 @@ import "./globals.css"
 import { Providers } from "@/components/providers"
 import { Toaster } from "react-hot-toast"
 
-// Load Exo font
-const exo = Exo({
+// <CHANGE> Load Inter font for body text
+const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-inter",
+  display: "swap",
+})
+
+// <CHANGE> Load Exo font for titles/headings
+const exo = Exo({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
   variable: "--font-exo",
   display: "swap",
@@ -30,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={exo.variable}>
+    <html lang="en" suppressHydrationWarning className={`${exo.variable} ${inter.variable}`}>
       <body className="antialiased">
 
         <Providers>
@@ -43,7 +52,7 @@ export default function RootLayout({
                 borderRadius: '10px',
                 color: 'var(--foreground)',
                 border: '1px solid var(--border)',
-                fontFamily: 'var(--font-exo), sans-serif',
+                fontFamily: 'var(--font-inter), sans-serif',
               },
               success: {
                 iconTheme: {
