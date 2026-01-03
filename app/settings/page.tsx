@@ -127,7 +127,7 @@ export default function SettingsPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
           <section className="space-y-4">
             <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Profile Picture</h2>
-            <div className="p-4 rounded-lg border border-border space-y-4">
+            <div className="p-4 rounded-lg border border-border ">
               <div className="flex items-center gap-4">
                 <div className="relative">
                   <Avatar className="h-20 w-20">
@@ -139,7 +139,7 @@ export default function SettingsPage() {
                         .join("")}
                     </AvatarFallback>
                   </Avatar>
-                  <Button
+                  {/* <Button
                     size="icon"
                     variant="secondary"
                     className="absolute bottom-0 right-0 h-7 w-7 rounded-full"
@@ -147,7 +147,7 @@ export default function SettingsPage() {
                     disabled={isLoading}
                   >
                     <Camera className="h-3.5 w-3.5" />
-                  </Button>
+                  </Button> */}
                 </div>
                 <div className="flex-1 space-y-2">
                   <p className="font-medium">{currentUser.name}</p>
@@ -164,7 +164,7 @@ export default function SettingsPage() {
                 disabled={isLoading}
               />
 
-              <div className="flex flex-wrap gap-2">
+              {/* <div className="flex flex-wrap gap-2">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -201,7 +201,7 @@ export default function SettingsPage() {
                     Remove
                   </Button>
                 )}
-              </div>
+              </div> */}
             </div>
           </section>
 

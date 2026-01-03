@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import * as authApi from "@/lib/api/auth-api"
 import type { User } from "@/lib/api/auth-api"
+import { uploadAvatar, deleteAvatar } from "./profile-slice"
 
 interface AuthState {
   user: User | null
@@ -132,6 +133,11 @@ const authSlice = createSlice({
     },
     setIsInitialized: (state, action) => {
       state.isInitialized = action.payload
+    },
+    updateUserAvatar: (state, action) => {
+      if (state.user) {
+        state.user.avatar = action.payload
+      }
     },
   },
   extraReducers: (builder) => {
@@ -284,8 +290,20 @@ const authSlice = createSlice({
         state.isLoading = false
         state.error = action.payload as string
       })
+
+    builder.addCase(uploadAvatar.fulfilled, (state, action) => {
+      if (state.user && action.payload) {
+        state.user.avatar = action.payload.avatar
+      }
+    })
+
+    builder.addCase(deleteAvatar.fulfilled, (state, action) => {
+      if (state.user) {
+        state.user.avatar = action.payload?.avatar || null
+      }
+    })
   },
 })
 
-export const { setOtpEmail, clearError, setIsInitialized } = authSlice.actions
+export const { setOtpEmail, clearError, setIsInitialized, updateUserAvatar } = authSlice.actions
 export default authSlice.reducer
