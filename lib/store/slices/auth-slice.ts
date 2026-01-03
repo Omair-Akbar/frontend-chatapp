@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import * as authApi from "@/lib/api/auth-api"
 import type { User } from "@/lib/api/auth-api"
+import { uploadAvatar, deleteAvatar } from "./profile-slice"
 
 interface AuthState {
   user: User | null
@@ -72,6 +73,54 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async (_, { reject
   }
 })
 
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (data: authApi.ForgotPasswordRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.forgotPassword(data)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to send reset code")
+    }
+  },
+)
+
+export const verifyResetOtp = createAsyncThunk(
+  "auth/verifyResetOtp",
+  async (data: authApi.VerifyResetOtpRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.verifyResetOtp(data)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "OTP verification failed")
+    }
+  },
+)
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (data: authApi.ResetPasswordRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.resetPassword(data)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Password reset failed")
+    }
+  },
+)
+
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (data: authApi.ChangePasswordRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.changePassword(data)
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to change password")
+    }
+  },
+)
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -84,6 +133,11 @@ const authSlice = createSlice({
     },
     setIsInitialized: (state, action) => {
       state.isInitialized = action.payload
+    },
+    updateUserAvatar: (state, action) => {
+      if (state.user) {
+        state.user.avatar = action.payload
+      }
     },
   },
   extraReducers: (builder) => {
@@ -174,8 +228,82 @@ const authSlice = createSlice({
         state.user = null
         state.isAuthenticated = false
       })
+
+    // Forgot password
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.otpEmail = action.meta.arg.email
+        state.error = null
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload as string
+      })
+
+    // Verify Reset OTP
+    builder
+      .addCase(verifyResetOtp.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(verifyResetOtp.fulfilled, (state) => {
+        state.isLoading = false
+        state.error = null
+      })
+      .addCase(verifyResetOtp.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload as string
+      })
+
+    // Reset Password
+    builder
+      .addCase(resetPassword.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.isLoading = false
+        state.error = null
+        state.otpEmail = null
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload as string
+      })
+
+    // Change Password
+    builder
+      .addCase(changePassword.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.isLoading = false
+        state.error = null
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload as string
+      })
+
+    builder.addCase(uploadAvatar.fulfilled, (state, action) => {
+      if (state.user && action.payload) {
+        state.user.avatar = action.payload.avatar
+      }
+    })
+
+    builder.addCase(deleteAvatar.fulfilled, (state, action) => {
+      if (state.user) {
+        state.user.avatar = action.payload?.avatar || null
+      }
+    })
   },
 })
 
-export const { setOtpEmail, clearError, setIsInitialized } = authSlice.actions
+export const { setOtpEmail, clearError, setIsInitialized, updateUserAvatar } = authSlice.actions
 export default authSlice.reducer
