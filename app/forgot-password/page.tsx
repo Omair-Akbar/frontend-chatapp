@@ -10,26 +10,27 @@ import { AuthLayout } from "@/components/layout/auth-layout"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAppDispatch } from "@/lib/store/hooks"
-import { setOtpEmail } from "@/lib/store/slices/auth-slice"
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
+import { forgotPassword } from "@/lib/store/slices/auth-slice"
 import { Loader2, ArrowLeft } from "lucide-react"
+import { toast } from "react-hot-toast"
 
 export default function ForgotPasswordPage() {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const [email, setEmail] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { otpEmail, isLoading } = useAppSelector((state) => state.auth)
+  const [email, setEmail] = useState(otpEmail || "")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    dispatch(setOtpEmail(email))
-    setIsSubmitting(false)
-    router.push("/verify-otp?reset=true")
+    try {
+      await dispatch(forgotPassword({ email })).unwrap()
+      toast.success("Reset code sent to your email!")
+      router.push("/verify-reset-otp")
+    } catch (err) {
+      toast.error((err as string) || "Failed to send reset code")
+    }
   }
 
   return (
@@ -53,8 +54,8 @@ export default function ForgotPasswordPage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <Button type="submit" variant="secondary" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? (
+          <Button type="submit" variant="default" className="w-full dark:text-black dark:bg-white" disabled={isLoading}>
+            {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Sending...
